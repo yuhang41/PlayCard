@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Playcard</title>
+    <style>
+        *{
+            padding: 0;
+            margin: 0;
+        }
+        .ALL{
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: flex-start;
+            align-content: space-around;
+            flex-wrap: wrap;
+        }
+        .box{
+            flex: 0 0 10%;
+            margin: 10px;
+            background: red;
+            width: 100px;
+            height: 100px;
+            border: 1px solid #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+            color: red;
+            transition: .5s;
+            cursor: pointer;
+        }
+        .box.active{
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <button class="CreateCard">CreateCard</button>
+    <button class="Shuffle">Shuffle</button>
+    <button class="Deal">Deal</button>
+    <div class="ALL">
+        <div class="box" data-text></div>
+        <div class="box" data-text></div>
+        <div class="box" data-text></div>
+        <div class="box" data-text></div>
+        <div class="box" data-text></div>
+        <div class="box" data-text></div>
+        <div class="box" data-text></div>
+        <div class="box" data-text></div>
+        <div class="box" data-text></div>
+        <div class="box" data-text></div>
+        <div class="box" data-text></div>
+        <div class="box" data-text></div>
+        <div class="box" data-text></div>
+        <div class="box" data-text></div>
+        <div class="box" data-text></div>
+        <div class="box" data-text></div>
+        <div class="box" data-text></div>
+        <div class="box" data-text></div>
+        <div class="box" data-text></div>
+        <div class="box" data-text></div>
+        <div class="box" data-text></div>
+        <div class="box" data-text></div>
+        <div class="box" data-text></div>
+        <div class="box" data-text></div>
+        <div class="box" data-text></div>
+        <div class="box" data-text></div>
+        <div class="box" data-text></div>
+        <div class="box" data-text></div>
+        <div class="box" data-text></div>
+        <div class="box" data-text></div>
+        <div class="box" data-text></div>
+        <div class="box" data-text></div>
+        <div class="box" data-text></div>
+        <div class="box" data-text></div>
+        <div class="box" data-text></div>
+        <div class="box" data-text></div>
+        <div class="box" data-text></div>
+        <div class="box" data-text></div>
+        <div class="box" data-text></div>
+        <div class="box" data-text></div>
+        <div class="box" data-text></div>
+        <div class="box" data-text></div>
+        <div class="box" data-text></div>
+        <div class="box" data-text></div>
+        <div class="box" data-text></div>
+        <div class="box" data-text></div>
+        <div class="box" data-text></div>
+        <div class="box" data-text></div>
+        <div class="box" data-text></div>
+        <div class="box" data-text></div>
+        <div class="box" data-text></div>
+        <div class="box" data-text></div>
+    </div>
+    
+    <script>
+        let boxs = document.querySelectorAll(".box")
+        let createCard =document.querySelector(".CreateCard")
+        let shuffle =document.querySelector(".Shuffle")
+        let deal =document.querySelector(".Deal")
+        let i
+        let mainCard
+        let emitCard
+        let firstCard
+        let secondCard
+        let touchNumber = 0
+        function getRandomCardNumber(min,max){//產生一個亂數
+            return Math.floor(Math.random() * max) + min
+        }
+        function CreateCardHandler(){//建立一個主牌
+            mainCard=[]
+            let xCard
+            let yCard
+            for(i= 1; i<=26; i++){
+                xCard=i
+                yCard=i
+                mainCard.push(xCard,yCard)
+            }
+            console.log(mainCard)
+        }
+        function shuffleHandler(){//洗牌
+            emitCard=[]
+            for(i = 0 ; i<=51 ; i++){
+                emitCard.push(mainCard[getRandomCardNumber(0,mainCard.length)])
+                mainCard.splice(mainCard.indexOf(emitCard[i]),1)
+                boxs[i].dataset.text = emitCard[i]
+            }
+            console.log(emitCard)
+        }
+        function DealHandler(){//發牌
+            boxs.forEach(box => {
+                box.innerText = box.dataset.text
+            })
+        }
+
+        function boxHandler(e){//點選每個牌
+            if(this.classList.contains("active")){
+                return
+            }
+            else{
+                this.classList.add("active")
+                touchNumber++
+                touchHandler(touchNumber,this.dataset.text)
+            }    
+        }
+        function touchHandler(n,t){//點選的第一個牌與第二個牌
+            if(n == 1){
+                firstCard = t
+                // console.log(firstCard)
+            }
+            else if(n == 2){
+                secondCard = t
+                touchNumber = 0                
+                booleanCard(firstCard,secondCard)
+            }
+        }
+        function booleanCard(first,second){
+            first = first * 1
+            second = second * 1
+            if(first != second){
+                setTimeout(()=>{
+                    boxs[emitCard.indexOf(first)].classList.remove("active")
+                    boxs[emitCard.lastIndexOf(first)].classList.remove("active")
+                    boxs[emitCard.indexOf(second)].classList.remove("active")
+                    boxs[emitCard.lastIndexOf(second)].classList.remove("active")
+                },500)
+                console.log(emitCard.indexOf(second))
+                console.log(emitCard.indexOf(second, 2))
+                console.log(first)
+                console.log(second)
+            }
+        }
+        boxs.forEach(box => box.addEventListener("click",boxHandler))
+        shuffle.addEventListener("click",shuffleHandler)
+        createCard.addEventListener("click",CreateCardHandler)
+        deal.addEventListener("click",DealHandler)
+    </script>
+</body>
+</html>
